@@ -12,12 +12,4 @@ export class TournamentController {
     getAll() {
         return this.tournamentService.getAll()
     }
-
-    search(searchFormat: number, startDate: Date, endDate: Date) {
-        return this.tournamentService.search(searchFormat, startDate, endDate)
-    }
-
-    async create(tournament: Tournament) {
-        // return this.tournamentService.createNew(tournament)
-    }
 }
