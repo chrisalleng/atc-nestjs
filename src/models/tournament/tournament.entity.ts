@@ -18,11 +18,8 @@ export class Tournament {
   type: number;
 
   @Column({ type: 'timestamp' })
-  created_at: Date;
+  created_at: string;
 
   @Column({ type: 'timestamp' })
-  updated_at: Date;
-
-  @Column({ type: 'json'})
-  json: object[];
+  updated_at: string;
 }

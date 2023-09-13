@@ -5,6 +5,7 @@ import { filter, lastValueFrom } from 'rxjs';
 import { Tournament } from '../tournament/tournament.entity';
 import { TournamentService } from '../tournament/tournament.service';
 import { AxiosResponse } from 'axios';
+import { json } from 'stream/consumers';
 
 @Controller('update')
 export class UpdateController {
@@ -25,20 +26,32 @@ export class UpdateController {
     }
 
     async runRupdate() {
-        // download latest tournament list
-
         try {
-            const test = await lastValueFrom(this.httpService.get<Tournament[]>('https://listfortress.com/api/v1/tournaments/'));
+            // download latest tournament list
+            const tournamentJson = await lastValueFrom(this.httpService.get<Tournament[]>('https://listfortress.com/api/v1/tournaments/'));
 
-            // const test = this.httpService.get('https://listfortress.com/api/v1/tournaments/').pipe(map(
-            //     tourny => this.tournamentService.createNew(tourny)
-            // ));
-
-            
-            // console.log(test.data);
-            test.data.map(
-                (tourny => this.tournamentService.createNew(tourny)
+            // find partial diff
+            const latestUpdate = await this.updateService.getLatest();
+            const currentTournaments = await this.tournamentService.getAll();
+            const tournamentsNewOrUpdated = tournamentJson.data.filter(tournament => (
+                (Date.parse(tournament.updated_at) > latestUpdate.created.getTime())
             ));
+
+            const tournamentsToInsert = this.subtractTournaments(tournamentsNewOrUpdated, currentTournaments);
+            const tournamentsToUpdate = this.subtractTournaments(tournamentsNewOrUpdated, tournamentsToInsert);
+            const tournamentsToDelete = this.subtractTournaments(currentTournaments, tournamentJson.data);
+
+            // delete all data from old version of tournament
+            this.tournamentService.delete(tournamentsToDelete);
+            this.tournamentService.delete(tournamentsToUpdate);
+
+            // insert updated tournaments
+            tournamentsToInsert.concat(tournamentsToUpdate).map(
+                (tournament => this.tournamentService.createNew(tournament))
+            );
+
+            // save last update timestamp
+            this.updateService.createNew();
 
         } catch (error) {
             throw new HttpException({
@@ -48,8 +61,30 @@ export class UpdateController {
                 cause: error
               });
         }
-        // find partial diff
-        // delete all data from old version of tournament
-        // re add all updated tournaments
+        
+        
+        
+    }
+
+    subtractTournaments(baseSet: Tournament[], removeSet: Tournament[]): Tournament[] {
+        const baseIds: number[] = [];
+        const removeIds: number[] = [];
+
+        baseSet.map(
+            (tournament => baseIds.push(tournament.id))
+        )
+        removeSet.map(
+            (tournament => removeIds.push(tournament.id))
+        )
+
+        const idList = baseIds.filter(
+            tournament => removeIds.indexOf(tournament) > -1
+        );
+
+        const returnVal = baseSet.filter(
+            (tournament => idList.indexOf(tournament.id) < 0)
+        );
+
+        return returnVal;
     }
 }

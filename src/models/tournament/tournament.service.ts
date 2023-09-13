@@ -25,12 +25,22 @@ export class TournamentService {
     }
 
     async createNew(inputTournament: Tournament) {
-        console.log(inputTournament);
+        this.logOperation("Creating", inputTournament);
         this.tournamentRepository.insert(inputTournament);
-        //TODO logic for adding tournament
+        //TODO logic for lists/pilots/upgrades/matchups
     }
 
-    async updateFromDate(date: Date) {
-        //TODO logic for adding all tournaments 
+    async delete(inputTournaments: Tournament[]) {
+        inputTournaments.map(
+            (tournament => { 
+                this.logOperation("Deleting", tournament);
+                this.tournamentRepository.delete(tournament.id);
+            })
+        );
+        //TODO logic for lists/pilots/upgrades/matchups
+    }
+
+    logOperation(operation: string, tournament: Tournament) {
+        console.log(operation + " tournament: " + tournament.id + " Name: " + tournament.name + " Date: " + tournament.date);
     }
 }

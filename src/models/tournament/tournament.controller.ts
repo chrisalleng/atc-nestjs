@@ -20,8 +20,4 @@ export class TournamentController {
     async create(tournament: Tournament) {
         // return this.tournamentService.createNew(tournament)
     }
-
-    async update(date: Date) {
-        return this.tournamentService.updateFromDate(date)
-    }
 }

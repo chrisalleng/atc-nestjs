@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Update } from './update.entity';
 import { Repository } from 'typeorm';
+import { filter } from 'rxjs';
 
 @Injectable()
 export class UpdateService {
@@ -11,8 +12,16 @@ export class UpdateService {
     ) {}
 
     getAll(): Promise<Update[]> {
-        // this.createNew();
         return this.updateRepository.find();
+    }
+
+    async getLatest(): Promise<Update> {
+        var test = (await this.updateRepository.find()).filter(
+            (function (update) {
+                return update.isActive === true;
+            })
+        )
+        return test[0];
     }
 
     async createNew() {
@@ -29,4 +38,6 @@ export class UpdateService {
         const update = new Update();
         return this.updateRepository.save(update);
     }
+
+
 }
