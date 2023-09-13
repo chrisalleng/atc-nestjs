@@ -4,8 +4,10 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Update } from './models/update/update.entity';
 import { UpdateController } from './models/update/update.controller';
-import { UpdateService } from './models/update/update.service';
 import { UpdateModule } from './models/update/update.module';
+import { TournamentModule } from './models/tournament/tournament.module';
+import { TournamentController } from './models/tournament/tournament.controller';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
@@ -20,9 +22,11 @@ import { UpdateModule } from './models/update/update.module';
       synchronize: true, //turn off in prod
       autoLoadEntities: true,
     }),
-    UpdateModule
+    UpdateModule,
+    TournamentModule,
+    HttpModule
   ],
-  controllers: [AppController, UpdateController],
+  controllers: [AppController, UpdateController, TournamentController],
   providers: [AppService],
 })
 export class AppModule {}
