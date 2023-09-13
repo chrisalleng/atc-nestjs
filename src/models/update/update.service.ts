@@ -20,6 +20,15 @@ export class UpdateService {
         return this.updateRepository.find();
     }
 
+    findOne(params: any): Promise<Update|null>{
+        console.log("Received request for update id: " + params.id)
+        return this.updateRepository.findOne( {
+            where: [
+                {id: params.id}
+            ],
+        })
+    }
+
     async getLatest(): Promise<Update> {
         var test = (await this.updateRepository.find()).filter(
             (function (update) {
@@ -80,9 +89,6 @@ export class UpdateService {
                 cause: error
               });
         }
-        
-        
-        
     }
 
     subtractTournaments(baseSet: Tournament[], removeSet: Tournament[]): Tournament[] {
@@ -106,6 +112,4 @@ export class UpdateService {
 
         return returnVal;
     }
-
-
 }

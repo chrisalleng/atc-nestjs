@@ -1,4 +1,4 @@
-import { Controller, Get , Req, Post} from '@nestjs/common';
+import { Controller, Get , Req, Post, Param} from '@nestjs/common';
 import { TournamentService } from './tournament.service';
 import { Tournament } from './tournament.entity';
 
@@ -11,5 +11,10 @@ export class TournamentController {
     @Get()
     getAll() {
         return this.tournamentService.getAll()
+    }
+
+    @Get(':id')
+    findOne(@Param() params: any) {
+        return this.tournamentService.findOne(params)
     }
 }

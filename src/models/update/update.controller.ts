@@ -1,4 +1,4 @@
-import { Controller, Get, HttpException, HttpStatus} from '@nestjs/common';
+import { Controller, Get, HttpException, HttpStatus, Param} from '@nestjs/common';
 import { UpdateService } from './update.service';
 
 @Controller('update')
@@ -13,7 +13,8 @@ export class UpdateController {
         return this.updateService.getAll();
     }
 
-    async create() {
-        return this.updateService.createNew();
+    @Get(':id')
+    findOne(@Param() params: any) {
+        return this.updateService.findOne(params)
     }
 }

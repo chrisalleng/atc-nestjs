@@ -14,6 +14,15 @@ export class TournamentService {
         return this.tournamentRepository.find()
     }
 
+    findOne(params: any): Promise<Tournament|null>{
+        console.log("Received request for tournament id: " + params.id)
+        return this.tournamentRepository.findOne( {
+            where: [
+                {id: params.id}
+            ],
+        })
+    }
+
     search(searchFormat: number, startDate: Date, endDate: Date): Promise<Tournament[]> {
         return this.tournamentRepository.find(
             {
