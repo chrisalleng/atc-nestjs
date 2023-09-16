@@ -11,7 +11,7 @@ export class Pilot {
   @Column()
   xws: string;
 
-  @ManyToOne(() => Player, (player) => player.pilots)
+  @ManyToOne(() => Player, (player) => player.pilots, { onDelete: 'CASCADE' })
   player: Player;
 
   @OneToMany(() => Upgrade, (upgrade) => upgrade.pilot, { cascade: true })

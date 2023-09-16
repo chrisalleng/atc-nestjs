@@ -53,7 +53,7 @@ export class UpdateService {
         return this.updateRepository.save(update);
     }
 
-    async runRupdate() {
+    async listfortressUpdate() {
         try {
             // download latest tournament list
             const tournamentJson = await lastValueFrom(this.httpService.get<Tournament[]>('https://listfortress.com/api/v1/tournaments/'));
@@ -82,7 +82,6 @@ export class UpdateService {
 
             // delete all data from old version of tournament
             this.tournamentService.delete(tournamentsToDelete);
-            this.tournamentService.delete(tournamentsToUpdate);
 
             // insert updated tournaments
             tournamentsToInsert.concat(tournamentsToUpdate).map(

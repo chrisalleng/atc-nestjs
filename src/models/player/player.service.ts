@@ -29,8 +29,6 @@ export class PlayerService {
     }
 
     createNew(inputPlayer: Player, inputTournament: Tournament) {
-        console.log("Creating player: " + inputPlayer.id)
-
         //Cleanup bad/misisng values
         inputPlayer.top_cut_rank = Math.max(0, inputPlayer.top_cut_rank);
         if (inputPlayer.dropped == null) {

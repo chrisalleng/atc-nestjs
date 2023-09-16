@@ -9,7 +9,6 @@ export class UpdateController {
 
     @Get()
     getAll() {
-        this.updateService.runRupdate();
         return this.updateService.getAll();
     }
 

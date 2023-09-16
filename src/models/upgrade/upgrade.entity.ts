@@ -10,6 +10,6 @@ export class Upgrade {
   @Column()
   xws: string;
 
-  @ManyToOne(() => Pilot, (pilot) => pilot.upgrades)
+  @ManyToOne(() => Pilot, (pilot) => pilot.upgrades, { onDelete: 'CASCADE' })
   pilot: Pilot;
 }

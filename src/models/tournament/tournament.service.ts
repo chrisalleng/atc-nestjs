@@ -66,7 +66,7 @@ export class TournamentService {
         inputTournaments.map(
             (tournament => { 
                 this.logOperation("Deleting", tournament);
-                this.tournamentRepository.delete(tournament.id);
+                this.tournamentRepository.remove(tournament);
             })
         );
     }
