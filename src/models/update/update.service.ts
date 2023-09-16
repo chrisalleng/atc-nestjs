@@ -59,7 +59,13 @@ export class UpdateService {
             const tournamentJson = await lastValueFrom(this.httpService.get<Tournament[]>('https://listfortress.com/api/v1/tournaments/'));
 
             // find partial diff
-            const latestUpdate = await this.getLatest();
+            var latestUpdate = await this.getLatest();
+            if (latestUpdate == null) {
+                console.log("No Updates found, defaulting to first run update creation");
+                latestUpdate = new Update();
+                latestUpdate.created = new Date(0);
+            }
+
             const currentTournaments = await this.tournamentService.getAll();
             const tournamentsNewOrUpdated = tournamentJson.data.filter(tournament => (
                 (Date.parse(tournament.updated_at) > latestUpdate.created.getTime())
@@ -68,6 +74,11 @@ export class UpdateService {
             const tournamentsToInsert = this.subtractTournaments(tournamentsNewOrUpdated, currentTournaments);
             const tournamentsToUpdate = this.subtractTournaments(tournamentsNewOrUpdated, tournamentsToInsert);
             const tournamentsToDelete = this.subtractTournaments(currentTournaments, tournamentJson.data);
+
+            console.log("Running Update at " + new Date());
+            console.log("Found " + tournamentsToInsert.length + " new Tournaments");
+            console.log("Found " + tournamentsToUpdate.length + " updated Tournaments");
+            console.log("Found " + tournamentsToDelete.length + " deleted Tournaments");
 
             // delete all data from old version of tournament
             this.tournamentService.delete(tournamentsToDelete);

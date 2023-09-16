@@ -1,8 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, PrimaryColumn } from 'typeorm';
+import { Player } from '../player/player.entity';
 
 @Entity()
 export class Tournament {
-  @PrimaryGeneratedColumn()
+  @PrimaryColumn()
   id: number;
 
   @Column()
@@ -22,4 +23,7 @@ export class Tournament {
 
   @Column({ type: 'timestamp' })
   updated_at: string;
+
+  @Column("json", { nullable: true })
+  participants: Player[];
 }

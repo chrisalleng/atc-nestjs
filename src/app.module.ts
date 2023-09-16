@@ -8,15 +8,17 @@ import { UpdateModule } from './models/update/update.module';
 import { TournamentModule } from './models/tournament/tournament.module';
 import { TournamentController } from './models/tournament/tournament.controller';
 import { HttpModule } from '@nestjs/axios';
+import { PlayerModule } from './models/player/player.module';
+import { PlayerController } from './models/player/player.controller';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      type: 'mysql',
+      type: 'postgres',
       host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: 'root',
+      port: 5432,
+      username: 'postgres',
+      password: 'postgres',
       database: 'test',
       entities: [Update],
       synchronize: true, //turn off in prod
@@ -24,9 +26,10 @@ import { HttpModule } from '@nestjs/axios';
     }),
     UpdateModule,
     TournamentModule,
-    HttpModule
+    HttpModule,
+    PlayerModule
   ],
-  controllers: [AppController, UpdateController, TournamentController],
+  controllers: [AppController, UpdateController, TournamentController, PlayerController],
   providers: [AppService],
 })
 export class AppModule {}
