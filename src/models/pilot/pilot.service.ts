@@ -2,11 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Pilot } from './pilot.entity';
 import { Between, Repository } from 'typeorm';
-import { Tournament } from '../tournament/tournament.entity';
-import { Player } from '../player/player.entity';
-import { Upgrade } from '../upgrade/upgrade.entity';
-import { ListfortressPilot } from '../listfortress/listfortressPilot';
 import { UpgradeService } from '../upgrade/upgrade.service';
+import { ListfortressPilot } from '../listfortress/listfortressInterfaces';
 
 @Injectable()
 export class PilotService {
@@ -29,9 +26,6 @@ export class PilotService {
         })
     }
 
-    // var item: {[key: string]: number} 
-    // {[key: string]: string}[]
-
     createNew(inputPilot: ListfortressPilot): Pilot {
         var pilot = new Pilot();
         
@@ -48,8 +42,6 @@ export class PilotService {
                 )
             }
         }
-
-        //TODO upgrades
 
         return pilot;
     }

@@ -7,7 +7,7 @@ export class Tournament {
   id: number;
 
   @OneToMany(() => Player, (player) => player.tournament, { cascade: true })
-  participants: Player[];
+  players: Player[];
 
   @Column()
   name: string;

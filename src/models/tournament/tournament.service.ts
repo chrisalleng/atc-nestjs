@@ -6,6 +6,7 @@ import { HttpService } from '@nestjs/axios';
 import { Observable, lastValueFrom, timeout } from 'rxjs';
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 import { PlayerService } from '../player/player.service';
+import { ListfortressTournament } from '../listfortress/listfortressInterfaces';
 
 @Injectable()
 export class TournamentService {
@@ -39,20 +40,30 @@ export class TournamentService {
             })
     }
 
-    async createNew(inputTournament: Tournament) {
+    async createNew(inputTournament: ListfortressTournament) {
         var retries = 0;
         var tournamentJson: Observable<AxiosResponse<Tournament, any>>;
         while(retries < 10) {
             try {
                 this.logOperation("Requesting", inputTournament);
-                const tournamentResponse =  (await lastValueFrom(this.httpService.get<Tournament>('https://listfortress.com/api/v1/tournaments/' + inputTournament.id))).data;
+                const tournamentResponse =  (await lastValueFrom(this.httpService.get<ListfortressTournament>('https://listfortress.com/api/v1/tournaments/' + inputTournament.id))).data;
                 this.logOperation("Creating", inputTournament);
 
+                var tournament = new Tournament();
+                tournament.id = tournamentResponse.id;
+                tournament.name = tournamentResponse.name;
+                tournament.date = tournamentResponse.date;
+                tournament.format = tournamentResponse.format;
+                tournament.type = tournamentResponse.type;
+                tournament.created_at = tournamentResponse.created_at;
+                tournament.updated_at = tournamentResponse.updated_at;
+                tournament.players = new Array();
+
                 tournamentResponse.participants.map(
-                    player => player = this.playerService.createNew(player, tournamentResponse)
+                    player => tournament.players.push(this.playerService.createNew(player, tournamentResponse.participants.length))
                 );
 
-                this.tournamentRepository.save(tournamentResponse);
+                this.tournamentRepository.save(tournament);
                 break;
             }
             catch (error) {
@@ -71,7 +82,7 @@ export class TournamentService {
         );
     }
 
-    logOperation(operation: string, tournament: Tournament) {
+    logOperation(operation: string, tournament: ListfortressTournament | Tournament) {
         console.log(operation + " tournament: " + tournament.id + " Name: " + tournament.name + " Date: " + tournament.date);
     }
 }

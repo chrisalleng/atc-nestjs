@@ -10,14 +10,11 @@ export class Player {
   @OneToMany(() => Pilot, (pilot) => pilot.player, { cascade: true })
   pilots: Pilot[];
 
-  @ManyToOne(() => Tournament, (tournament) => tournament.participants, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Tournament, (tournament) => tournament.players, { onDelete: 'CASCADE' })
   tournament: Tournament;
 
   @Column()
   name: string;
-
-  @Column()
-  tournament_id: number;
 
   @Column()
   score: number;

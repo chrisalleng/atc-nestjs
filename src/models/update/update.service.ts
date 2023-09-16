@@ -6,6 +6,7 @@ import { filter, lastValueFrom } from 'rxjs';
 import { Tournament } from '../tournament/tournament.entity';
 import { TournamentService } from '../tournament/tournament.service';
 import { HttpService } from '@nestjs/axios';
+import { ListfortressTournament } from '../listfortress/listfortressInterfaces';
 
 @Injectable()
 export class UpdateService {
@@ -56,9 +57,9 @@ export class UpdateService {
     async listfortressUpdate() {
         try {
             // download latest tournament list
-            const tournamentJson = await lastValueFrom(this.httpService.get<Tournament[]>('https://listfortress.com/api/v1/tournaments/'));
+            const tournamentJson = await lastValueFrom(this.httpService.get<ListfortressTournament[]>('https://listfortress.com/api/v1/tournaments/'));
 
-            // find partial diff
+            // new or updated tournaments
             var latestUpdate = await this.getLatest();
             if (latestUpdate == null) {
                 console.log("No Updates found, defaulting to first run update creation");
@@ -71,20 +72,27 @@ export class UpdateService {
                 (Date.parse(tournament.updated_at) > latestUpdate.created.getTime())
             ));
 
-            const tournamentsToInsert = this.subtractTournaments(tournamentsNewOrUpdated, currentTournaments);
-            const tournamentsToUpdate = this.subtractTournaments(tournamentsNewOrUpdated, tournamentsToInsert);
-            const tournamentsToDelete = this.subtractTournaments(currentTournaments, tournamentJson.data);
-
+            // Find deleted tournaments
+            const currentTournamentIDs: number[] = new Array();
+            const listfortressTournamentIDs: number[] = new Array();
+            currentTournaments.map(tournament => currentTournamentIDs.push(tournament.id));
+            tournamentJson.data.map(tournament => listfortressTournamentIDs.push(tournament.id));
+            const deletedTournamentIDs = currentTournamentIDs.filter(
+                id => !listfortressTournamentIDs.includes(id)
+            )
+            const deletedTournaments = currentTournaments.filter(
+                tournament => deletedTournamentIDs.includes(tournament.id)
+            )
+            
             console.log("Running Update at " + new Date());
-            console.log("Found " + tournamentsToInsert.length + " new Tournaments");
-            console.log("Found " + tournamentsToUpdate.length + " updated Tournaments");
-            console.log("Found " + tournamentsToDelete.length + " deleted Tournaments");
+            console.log("Found " + tournamentsNewOrUpdated.length + " new or updated Tournaments");
+            console.log("Found " + deletedTournaments.length + " deleted Tournaments");
 
             // delete all data from old version of tournament
-            this.tournamentService.delete(tournamentsToDelete);
+            this.tournamentService.delete(deletedTournaments);
 
             // insert updated tournaments
-            tournamentsToInsert.concat(tournamentsToUpdate).map(
+            tournamentsNewOrUpdated.map(
                 (tournament => this.tournamentService.createNew(tournament))
             );
 
@@ -121,5 +129,15 @@ export class UpdateService {
         );
 
         return returnVal;
+    }
+
+    subtractLists(baseSet: number[], removeSet: number[]): number[] {
+        const idList = baseSet.filter(
+            id => removeSet.indexOf(id) > -1
+        );
+
+        return baseSet.filter(
+            (id => idList.indexOf(id) < 0)
+        );
     }
 }

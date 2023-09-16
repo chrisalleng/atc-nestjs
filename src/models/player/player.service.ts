@@ -5,7 +5,7 @@ import { Between, Repository } from 'typeorm';
 import { Tournament } from '../tournament/tournament.entity';
 import { PilotService } from '../pilot/pilot.service';
 import { Pilot } from '../pilot/pilot.entity';
-import { ListfortressPilot } from '../listfortress/listfortressPilot'
+import { ListfortressPilot, ListfortressPlayer } from '../listfortress/listfortressInterfaces';
 
 @Injectable()
 export class PlayerService {
@@ -28,46 +28,30 @@ export class PlayerService {
         })
     }
 
-    createNew(inputPlayer: Player, inputTournament: Tournament) {
-        //Cleanup bad/misisng values
-        inputPlayer.top_cut_rank = Math.max(0, inputPlayer.top_cut_rank);
-        if (inputPlayer.dropped == null) {
-            inputPlayer.dropped = false;
-        }
-        if (inputPlayer.score == null) {
-            inputPlayer.score = 0;
-        }
-        if (inputPlayer.sos == null) {
-            inputPlayer.sos = 0;
-        }
-        if (inputPlayer.mov == null) {
-            inputPlayer.mov = 0;
-        }
-        if (inputPlayer.name == null) {
-            inputPlayer.name = "";
-        }
-        if (inputPlayer.swiss_rank == null) {
-            inputPlayer.swiss_rank = inputTournament.participants.length;
-        }
-        if (inputPlayer.list_json == null) {
-            inputPlayer.list_json = "";
-        }
+    createNew(inputPlayer: ListfortressPlayer, tournamentSize: number): Player {
+        var player = new Player();
+        player.id = inputPlayer.id;
+        player.name = inputPlayer.name ?? "";
+        player.score = inputPlayer.score ?? 0;
+        player.swiss_rank = inputPlayer.swiss_rank ?? tournamentSize;
+        player.top_cut_rank = inputPlayer.top_cut_rank ?? 0;
+        player.mov = inputPlayer.mov ?? 0;
+        player.sos = inputPlayer.sos ?? 0;
+        player.dropped = inputPlayer.dropped ?? false;
+        player.list_json = inputPlayer.list_json ?? "";
 
         // Calculated Fields
-        inputPlayer.percentile = (inputTournament.participants.length - inputPlayer.swiss_rank) / (inputTournament.participants.length - 1);
+        player.percentile = (tournamentSize - inputPlayer.swiss_rank) / (tournamentSize - 1);
         if(inputPlayer.list_json) {
             const list = JSON.parse(inputPlayer.list_json);
-            inputPlayer.faction = list.faction;
-            inputPlayer.pilots = new Array();
+            player.faction = list.faction;
+            player.pilots = new Array();
             list.pilots.map(
-                (pilot: ListfortressPilot) => inputPlayer.pilots.push(this.pilotService.createNew(pilot))
+                (pilot: ListfortressPilot) => player.pilots.push(this.pilotService.createNew(pilot))
             );
         }
 
-        if (inputPlayer.faction == null) {
-            inputPlayer.faction = "unknown";
-        }
-
-        return inputPlayer;
+        player.faction ??= "unknown"
+        return player;
     }
 }
