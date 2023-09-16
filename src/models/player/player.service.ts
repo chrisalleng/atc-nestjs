@@ -56,7 +56,6 @@ export class PlayerService {
         }
 
         // Calculated Fields
-        //TODO list, player faction from list
         inputPlayer.percentile = (inputTournament.participants.length - inputPlayer.swiss_rank) / (inputTournament.participants.length - 1);
         if(inputPlayer.list_json) {
             const list = JSON.parse(inputPlayer.list_json);
