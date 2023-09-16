@@ -12,7 +12,7 @@ export class PilotController {
         return this.pilotService.getAll()
     }
 
-    @Get(':id')
+    @Get(':pilot_id')
     findOne(@Param() params: any) {
         return this.pilotService.findOne(params)
     }

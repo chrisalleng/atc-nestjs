@@ -55,10 +55,10 @@ export class TournamentService {
                 this.tournamentRepository.save(tournamentResponse);
                 break;
             }
-                catch (error) {
-                    console.log("Error during tournament " + inputTournament.id + " try attempt " + retries)
-                    retries += 1;
-                }
+            catch (error) {
+            console.log("Error during tournament " + inputTournament.id + " try attempt " + retries)
+            retries += 1;
+            }
             }
     }
 

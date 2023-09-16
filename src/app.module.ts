@@ -12,6 +12,8 @@ import { PlayerModule } from './models/player/player.module';
 import { PlayerController } from './models/player/player.controller';
 import { PilotModule } from './models/pilot/pilot.module';
 import { PilotController } from './models/pilot/pilot.controller';
+import { UpgradeModule } from './models/upgrade/upgrade.module';
+import { UpgradeController } from './models/upgrade/upgrade.controller';
 
 @Module({
   imports: [
@@ -30,9 +32,10 @@ import { PilotController } from './models/pilot/pilot.controller';
     TournamentModule,
     HttpModule,
     PlayerModule,
-    PilotModule
+    PilotModule,
+    UpgradeModule
   ],
-  controllers: [AppController, UpdateController, TournamentController, PlayerController, PilotController],
+  controllers: [AppController, UpdateController, TournamentController, PlayerController, PilotController, UpgradeController],
   providers: [AppService],
 })
 export class AppModule {}

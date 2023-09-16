@@ -5,6 +5,7 @@ import { Between, Repository } from 'typeorm';
 import { Tournament } from '../tournament/tournament.entity';
 import { PilotService } from '../pilot/pilot.service';
 import { Pilot } from '../pilot/pilot.entity';
+import { ListfortressPilot } from '../listfortress/listfortressPilot'
 
 @Injectable()
 export class PlayerService {
@@ -62,7 +63,7 @@ export class PlayerService {
             inputPlayer.faction = list.faction;
             inputPlayer.pilots = new Array();
             list.pilots.map(
-                (pilot: Pilot) => inputPlayer.pilots.push(this.pilotService.createNew(pilot, inputPlayer))
+                (pilot: ListfortressPilot) => inputPlayer.pilots.push(this.pilotService.createNew(pilot))
             );
         }
 
