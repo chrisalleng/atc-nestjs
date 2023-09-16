@@ -47,12 +47,12 @@ export class TournamentService {
                 this.logOperation("Requesting", inputTournament);
                 const tournamentResponse =  (await lastValueFrom(this.httpService.get<Tournament>('https://listfortress.com/api/v1/tournaments/' + inputTournament.id))).data;
                 this.logOperation("Creating", inputTournament);
-                this.tournamentRepository.insert(tournamentResponse);
 
                 tournamentResponse.participants.map(
-                    participant => this.playerService.createNew(participant, tournamentResponse)
+                    player => player = this.playerService.createNew(player, tournamentResponse)
                 );
 
+                this.tournamentRepository.save(tournamentResponse);
                 break;
             }
                 catch (error) {
@@ -60,8 +60,6 @@ export class TournamentService {
                     retries += 1;
                 }
             }
-        
-        //TODO logic for lists/pilots/upgrades/matchups
     }
 
     async delete(inputTournaments: Tournament[]) { 
@@ -71,7 +69,6 @@ export class TournamentService {
                 this.tournamentRepository.delete(tournament.id);
             })
         );
-        //TODO logic for lists/pilots/upgrades/matchups
     }
 
     logOperation(operation: string, tournament: Tournament) {

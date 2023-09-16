@@ -10,6 +10,8 @@ import { TournamentController } from './models/tournament/tournament.controller'
 import { HttpModule } from '@nestjs/axios';
 import { PlayerModule } from './models/player/player.module';
 import { PlayerController } from './models/player/player.controller';
+import { PilotModule } from './models/pilot/pilot.module';
+import { PilotController } from './models/pilot/pilot.controller';
 
 @Module({
   imports: [
@@ -27,9 +29,10 @@ import { PlayerController } from './models/player/player.controller';
     UpdateModule,
     TournamentModule,
     HttpModule,
-    PlayerModule
+    PlayerModule,
+    PilotModule
   ],
-  controllers: [AppController, UpdateController, TournamentController, PlayerController],
+  controllers: [AppController, UpdateController, TournamentController, PlayerController, PilotController],
   providers: [AppService],
 })
 export class AppModule {}

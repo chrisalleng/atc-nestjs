@@ -3,12 +3,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Player } from './player.entity';
 import { Between, Repository } from 'typeorm';
 import { Tournament } from '../tournament/tournament.entity';
+import { PilotService } from '../pilot/pilot.service';
+import { Pilot } from '../pilot/pilot.entity';
 
 @Injectable()
 export class PlayerService {
     constructor(
         @InjectRepository(Player)
         private readonly playerRepository: Repository<Player>,
+        private readonly pilotService: PilotService
     ) {}
 
     getAll(): Promise<Player[]> {
@@ -24,7 +27,7 @@ export class PlayerService {
         })
     }
 
-    async createNew(inputPlayer: Player, inputTournament: Tournament) {
+    createNew(inputPlayer: Player, inputTournament: Tournament) {
         console.log("Creating player: " + inputPlayer.id)
 
         //Cleanup bad/misisng values
@@ -47,9 +50,26 @@ export class PlayerService {
         if (inputPlayer.swiss_rank == null) {
             inputPlayer.swiss_rank = inputTournament.participants.length;
         }
+        if (inputPlayer.list_json == null) {
+            inputPlayer.list_json = "";
+        }
 
+        // Calculated Fields
+        //TODO list, player faction from list
         inputPlayer.percentile = (inputTournament.participants.length - inputPlayer.swiss_rank) / (inputTournament.participants.length - 1);
+        if(inputPlayer.list_json) {
+            const list = JSON.parse(inputPlayer.list_json);
+            inputPlayer.faction = list.faction;
+            inputPlayer.pilots = new Array();
+            list.pilots.map(
+                (pilot: Pilot) => inputPlayer.pilots.push(this.pilotService.createNew(pilot, inputPlayer))
+            );
+        }
 
-        this.playerRepository.insert(inputPlayer);
+        if (inputPlayer.faction == null) {
+            inputPlayer.faction = "unknown";
+        }
+
+        return inputPlayer;
     }
 }

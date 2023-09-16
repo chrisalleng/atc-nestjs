@@ -1,10 +1,13 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, PrimaryColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, PrimaryColumn, OneToMany } from 'typeorm';
 import { Player } from '../player/player.entity';
 
 @Entity()
 export class Tournament {
   @PrimaryColumn()
   id: number;
+
+  @OneToMany(() => Player, (player) => player.tournament, { cascade: true })
+  participants: Player[];
 
   @Column()
   name: string;
@@ -23,7 +26,4 @@ export class Tournament {
 
   @Column({ type: 'timestamp' })
   updated_at: string;
-
-  @Column("json", { nullable: true })
-  participants: Player[];
 }
