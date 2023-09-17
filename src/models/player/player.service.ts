@@ -6,13 +6,16 @@ import { Tournament } from '../tournament/tournament.entity';
 import { PilotService } from '../pilot/pilot.service';
 import { Pilot } from '../pilot/pilot.entity';
 import { ListfortressPilot, ListfortressPlayer } from '../listfortress/listfortressInterfaces';
+import { XWSFactionService } from '../xwsFaction/xwsFaction.service';
+import { XWSFaction } from '../xwsFaction/xwsFaction.entity';
 
 @Injectable()
 export class PlayerService {
     constructor(
         @InjectRepository(Player)
         private readonly playerRepository: Repository<Player>,
-        private readonly pilotService: PilotService
+        private readonly pilotService: PilotService,
+        private readonly xwsFactionService: XWSFactionService
     ) {}
 
     getAll(): Promise<Player[]> {
@@ -28,7 +31,7 @@ export class PlayerService {
         })
     }
 
-    createNew(inputPlayer: ListfortressPlayer, tournamentSize: number): Player {
+    async createNew(inputPlayer: ListfortressPlayer, tournamentSize: number): Promise<Player> {
         var player = new Player();
         player.id = inputPlayer.id;
         player.name = inputPlayer.name ?? "";
@@ -42,16 +45,18 @@ export class PlayerService {
 
         // Calculated Fields
         player.percentile = (tournamentSize - inputPlayer.swiss_rank) / (tournamentSize - 1);
+        player.faction = this.xwsFactionService.unknownFaction;
         if(inputPlayer.list_json) {
             const list = JSON.parse(inputPlayer.list_json);
-            player.faction = list.faction;
+            if(list.faction) {
+                const faction = await this.xwsFactionService.findOne(list.faction);
+                player.faction = faction ?? this.xwsFactionService.unknownFaction;
+            }
             player.pilots = new Array();
             list.pilots.map(
                 (pilot: ListfortressPilot) => player.pilots.push(this.pilotService.createNew(pilot))
             );
         }
-
-        player.faction ??= "unknown"
         return player;
     }
 }

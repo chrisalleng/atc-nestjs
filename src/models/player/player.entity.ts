@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, PrimaryColumn, OneToMany, ManyToOne } from 'typeorm';
 import { Pilot } from '../pilot/pilot.entity';
 import { Tournament } from '../tournament/tournament.entity';
+import { XWSFaction } from '../xwsFaction/xwsFaction.entity';
 
 @Entity()
 export class Player {
@@ -12,6 +13,9 @@ export class Player {
 
   @ManyToOne(() => Tournament, (tournament) => tournament.players, { onDelete: 'CASCADE' })
   tournament: Tournament;
+
+  @ManyToOne(() => XWSFaction, (xwsFaction) => xwsFaction.players)
+  faction: XWSFaction;
 
   @Column()
   name: string;
@@ -36,9 +40,6 @@ export class Player {
 
   @Column()
   list_json: string;
-
-  @Column()
-  faction: string;
 
   @Column({type: 'decimal', precision: 10, scale: 2, default: 0.0 })
   percentile: number;
