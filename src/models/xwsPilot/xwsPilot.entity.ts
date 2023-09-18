@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, PrimaryColumn, ManyToOne, OneToMany } from 'typeorm';
 import { Pilot } from '../pilot/pilot.entity';
+import { XWSFaction } from '../xwsFaction/xwsFaction.entity';
 
 @Entity()
 export class XWSPilot {
@@ -14,9 +15,8 @@ export class XWSPilot {
   @Column()
   ship: string
 
-  //TODO move to many to one
-  @Column()
-  faction: string;
+  @ManyToOne(() => XWSFaction, (faction) => faction.xwsPilots)
+  faction: XWSFaction;
 
   @Column()
   subtitle: string;

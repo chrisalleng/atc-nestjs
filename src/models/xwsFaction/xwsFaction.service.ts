@@ -34,7 +34,9 @@ export class XWSFactionService {
         for (const key in factions) {
             this.save(factions[key].xws, factions[key].name, factions[key].icon);
         }
-        this.save(this.unknownFaction.xws, this.unknownFaction.name, this.unknownFaction.icon);
+        return this.save(this.unknownFaction.xws, this.unknownFaction.name, this.unknownFaction.icon).then(
+            log => console.log("Done loading XWS Factions")
+        );
     }
 
     save(xws: string, name: string, icon: string) {
@@ -42,6 +44,6 @@ export class XWSFactionService {
         faction.xws = xws;
         faction.name = name;
         faction.icon = icon;
-        this.xwsFactionRepository.save(faction);
+        return this.xwsFactionRepository.save(faction);
     }
 }

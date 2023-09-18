@@ -12,19 +12,20 @@ export class AppService {
 ) {}
 
 onApplicationBootstrap() {
-  this.loadXWS();
-  // this.listfortressUpdate();
+  this.loadXWS().then(
+    a => this.listfortressUpdate()
+  );
+  
 }
 
   getHello(): string {
     return 'Hello World!';
   }
 
-  loadXWS() {
+  async loadXWS() {
     console.log("Updating XWS database entries");
-    this.xwsFactionService.loadFactions();
-    this.xwsPilotService.loadPilots();
-    console.log("Done updating XWS")
+    await this.xwsFactionService.loadFactions();
+    return this.xwsPilotService.loadPilots();
   }
 
   async listfortressUpdate() {

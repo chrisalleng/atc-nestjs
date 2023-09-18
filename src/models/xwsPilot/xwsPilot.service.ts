@@ -103,29 +103,43 @@ import { default as sepHMP } from '../../submodules/xwing-data2/data/pilots/sepa
 import { default as sepFirespray } from '../../submodules/xwing-data2/data/pilots/separatist-alliance/firespray-class-patrol-craft.json'
 import { default as sepRogue } from '../../submodules/xwing-data2/data/pilots/separatist-alliance/rogue-class-starfighter.json'
 import { default as sepGauntlet } from '../../submodules/xwing-data2/data/pilots/separatist-alliance/gauntlet-fighter.json'
+import { XWSFactionService } from '../xwsFaction/xwsFaction.service';
+
 
 @Injectable()
 export class XWSPilotService {
     constructor(
         @InjectRepository(XWSPilot)
-        private readonly xwsPilotRepository: Repository<XWSPilot>
+        private readonly xwsPilotRepository: Repository<XWSPilot>,
+        private readonly xwsFactionService: XWSFactionService
     ) {
-        this.unknownPilot = new XWSPilot();
-        this.unknownPilot.xws = "unknown";
-        this.unknownPilot.name = "Unknown Pilot";
-        this.unknownPilot.subtitle = "Unknown Pilot";
-        this.unknownPilot.limited = false;
-        this.unknownPilot.initiative = 0;
-        this.unknownPilot.cost = 0;
-        this.unknownPilot.loadout = 0;
-        this.unknownPilot.artwork = "";
-        this.unknownPilot.image = "";
-        this.unknownPilot.standard = false;
-        this.unknownPilot.standardLoadout = false;
-        this.unknownPilot.ship = "unknown";
+        //TODO why does xws store faction full names on ships...
+        this.factionMap = {
+            "Rebel Alliance": "rebelalliance",
+            "Galactic Empire": "galacticempire",
+            "Scum and Villainy": "scumandvillainy",
+            "Resistance": "resistance",
+            "First Order": "firstorder",
+            "Galactic Republic": "galacticrepublic",
+            "Separatist Alliance": "separatistalliance"
+        }
+        // this.unknownPilot = new XWSPilot();
+        // this.unknownPilot.xws = "unknown";
+        // this.unknownPilot.name = "Unknown Pilot";
+        // this.unknownPilot.subtitle = "Unknown Pilot";
+        // this.unknownPilot.limited = false;
+        // this.unknownPilot.initiative = 0;
+        // this.unknownPilot.cost = 0;
+        // this.unknownPilot.loadout = 0;
+        // this.unknownPilot.artwork = "";
+        // this.unknownPilot.image = "";
+        // this.unknownPilot.standard = false;
+        // this.unknownPilot.standardLoadout = false;
+        // this.unknownPilot.ship = "unknown";
     }
 
-    public unknownPilot: XWSPilot;
+    // public unknownPilot: XWSPilot;
+    public factionMap: { [name: string]: string};
 
     getAll(): Promise<XWSPilot[]> {
         return this.xwsPilotRepository.find()
@@ -151,19 +165,17 @@ export class XWSPilotService {
             repARC, repD7, repD7B, repTorrent, repN1, repY, repETA, repGauntlet, repLAAT, repV, repZ,
             sepVulture, sepBelbullab, sepInfil, sepHyena, sepNantex, sepTri, sepHMP, sepFirespray, sepRogue, sepGauntlet] as unknown as XWSShipSchema[];
             
-        ships.map(
+        return Promise.all(ships.map(
             ship => {
                 ship.pilots.map(
                     pilot => {
                         this.save(pilot, ship);
-                }
-                )
-                
+                })
             }
-        )
+        ));
     }
 
-    save(pilot: XWSPilotSchema, ship: XWSShipSchema) {
+    async save(pilot: XWSPilotSchema, ship: XWSShipSchema) {
         let savePilot = new XWSPilot();
         savePilot.xws = pilot.xws;
         savePilot.name = pilot.name;
@@ -176,10 +188,13 @@ export class XWSPilotService {
         savePilot.image = pilot.image ?? "";
         savePilot.standard = pilot.standard;
 
-        savePilot.faction = ship.faction;
+        let faction = await this.xwsFactionService.findOne(this.factionMap[ship.faction])
+        faction ??= this.xwsFactionService.unknownFaction;
+
+        savePilot.faction = faction;
         savePilot.ship = ship.xws;
         savePilot.standardLoadout = pilot.standardLoadout ? true : false;
         console.log("Saving " + savePilot.xws);
-        this.xwsPilotRepository.save(savePilot);
+        return this.xwsPilotRepository.save(savePilot);
     }
 }
