@@ -6,7 +6,7 @@ import { HttpService } from '@nestjs/axios';
 import { Observable, lastValueFrom, timeout } from 'rxjs';
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 import { PlayerService } from '../player/player.service';
-import { ListfortressTournament } from '../listfortress/listfortressInterfaces';
+import { ListfortressTournament } from '../../interfaces/listfortressInterfaces';
 
 @Injectable()
 export class TournamentService {

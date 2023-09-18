@@ -6,7 +6,7 @@ import { filter, lastValueFrom } from 'rxjs';
 import { Tournament } from '../tournament/tournament.entity';
 import { TournamentService } from '../tournament/tournament.service';
 import { HttpService } from '@nestjs/axios';
-import { ListfortressTournament } from '../listfortress/listfortressInterfaces';
+import { ListfortressTournament } from '../../interfaces/listfortressInterfaces';
 
 @Injectable()
 export class UpdateService {

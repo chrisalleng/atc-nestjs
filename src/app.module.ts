@@ -16,6 +16,8 @@ import { UpgradeModule } from './models/upgrade/upgrade.module';
 import { UpgradeController } from './models/upgrade/upgrade.controller';
 import { XWSFactionModule } from './models/xwsFaction/xwsFaction.module';
 import { XWSFactionController } from './models/xwsFaction/xwsFaction.controller';
+import { XWSPilotModule } from './models/xwsPilot/xwsPilot.module';
+import { XWSPilotController } from './models/xwsPilot/xwsPilot.controller';
 
 @Module({
   imports: [
@@ -36,9 +38,10 @@ import { XWSFactionController } from './models/xwsFaction/xwsFaction.controller'
     PlayerModule,
     PilotModule,
     UpgradeModule,
-    XWSFactionModule
+    XWSFactionModule,
+    XWSPilotModule
   ],
-  controllers: [AppController, UpdateController, TournamentController, PlayerController, PilotController, UpgradeController, XWSFactionController],
+  controllers: [AppController, UpdateController, TournamentController, PlayerController, PilotController, UpgradeController, XWSFactionController, XWSPilotController],
   providers: [AppService],
 })
 export class AppModule {}

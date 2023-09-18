@@ -5,7 +5,7 @@ import { Between, Repository } from 'typeorm';
 import { Tournament } from '../tournament/tournament.entity';
 import { PilotService } from '../pilot/pilot.service';
 import { Pilot } from '../pilot/pilot.entity';
-import { ListfortressPilot, ListfortressPlayer } from '../listfortress/listfortressInterfaces';
+import { ListfortressPilot, ListfortressPlayer } from '../../interfaces/listfortressInterfaces';
 import { XWSFactionService } from '../xwsFaction/xwsFaction.service';
 import { XWSFaction } from '../xwsFaction/xwsFaction.entity';
 

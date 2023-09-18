@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Pilot } from './pilot.entity';
 import { Between, Repository } from 'typeorm';
 import { UpgradeService } from '../upgrade/upgrade.service';
-import { ListfortressPilot } from '../listfortress/listfortressInterfaces';
+import { ListfortressPilot } from '../../interfaces/listfortressInterfaces';
 
 @Injectable()
 export class PilotService {
