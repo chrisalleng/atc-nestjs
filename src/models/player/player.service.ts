@@ -7,7 +7,7 @@ import { PilotService } from '../pilot/pilot.service';
 import { Pilot } from '../pilot/pilot.entity';
 import { ListfortressPilot, ListfortressPlayer } from '../../interfaces/listfortressInterfaces';
 import { XWSFactionService } from '../xwsFaction/xwsFaction.service';
-import { XWSFaction } from '../xwsFaction/xwsFaction.entity';
+import { XWSPilotService } from '../xwsPilot/xwsPilot.service';
 
 @Injectable()
 export class PlayerService {
@@ -15,7 +15,8 @@ export class PlayerService {
         @InjectRepository(Player)
         private readonly playerRepository: Repository<Player>,
         private readonly pilotService: PilotService,
-        private readonly xwsFactionService: XWSFactionService
+        private readonly xwsFactionService: XWSFactionService,
+        private readonly xwsPilotService: XWSPilotService
     ) {}
 
     getAll(): Promise<Player[]> {
@@ -53,10 +54,18 @@ export class PlayerService {
                 player.faction = faction ?? this.xwsFactionService.unknownFaction;
             }
             player.pilots = new Array();
-            list.pilots.map(
-                (pilot: ListfortressPilot) => player.pilots.push(this.pilotService.createNew(pilot))
-            );
-        }
+            await Promise.all(list.pilots.map(
+                async (pilot: ListfortressPilot) => {
+                    let parsedXWS = await this.xwsPilotService.findOne(pilot.id ?? this.xwsPilotService.unknownPilot);
+                    if (!parsedXWS){
+                        console.error("Player: " + inputPlayer.id + " error parsing pilot xws: " + pilot.id);
+                    } else {
+                        // player.pilots.push(this.pilotService.createNew(pilot, player));
+                        player.pilots.push(this.pilotService.createNew(pilot, parsedXWS, player));
+                    }
+                }
+            ));
+        } 
         return player;
     }
 }

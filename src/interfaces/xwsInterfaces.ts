@@ -18,3 +18,11 @@ export interface XWSPilotSchema {
     loadout: number;
     standardLoadout: string[];
 }
+
+export interface XWSShipSchema {
+    xws: string;
+    name: string;
+    size: string;
+    icon: string;
+    faction: string;
+}

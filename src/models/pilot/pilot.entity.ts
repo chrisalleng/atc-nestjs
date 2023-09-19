@@ -9,13 +9,10 @@ export class Pilot {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  xws: string;
-
   @ManyToOne(() => Player, (player) => player.pilots, { onDelete: 'CASCADE' })
   player: Player;
 
-  @ManyToOne(() => XWSPilot, (xwsPilot) => xwsPilot.pilots,)
+  @ManyToOne(() => XWSPilot, (xwsPilot) => xwsPilot.pilots)
   xwsPilot: XWSPilot;
 
   @OneToMany(() => Upgrade, (upgrade) => upgrade.pilot, { cascade: true })

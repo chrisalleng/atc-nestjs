@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, PrimaryColumn, ManyToOne, OneToMany } from 'typeorm';
 import { Player } from '../player/player.entity';
 import { XWSPilot } from '../xwsPilot/xwsPilot.entity';
+import { XWSShip } from '../xwsShip/xwsShip.entity';
 
 @Entity()
 export class XWSFaction {
@@ -19,4 +20,7 @@ export class XWSFaction {
 
   @OneToMany(() => XWSPilot, (pilot) => pilot.faction)
   xwsPilots: XWSPilot[];
+
+  @OneToMany(() => XWSShip, (ship) => ship.faction)
+  xwsShips: XWSPilot[];
 }

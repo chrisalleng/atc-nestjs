@@ -39,6 +39,7 @@ import { default as empirePhantom } from '../../submodules/xwing-data2/data/pilo
 import { default as empireBomber } from '../../submodules/xwing-data2/data/pilots/galactic-empire/tie-sa-bomber.json'
 import { default as empireStriker } from '../../submodules/xwing-data2/data/pilots/galactic-empire/tie-sk-striker.json'
 import { default as empireDeci } from '../../submodules/xwing-data2/data/pilots/galactic-empire/vt-49-decimator.json'
+import { default as empireTIEHeavy } from '../../submodules/xwing-data2/data/pilots/galactic-empire/tie-rb-heavy.json'
 
 import { default as scumAggressor } from '../../submodules/xwing-data2/data/pilots/scum-and-villainy/aggressor-assault-fighter.json'
 import { default as scumY } from '../../submodules/xwing-data2/data/pilots/scum-and-villainy/btl-a4-y-wing.json'
@@ -104,6 +105,7 @@ import { default as sepFirespray } from '../../submodules/xwing-data2/data/pilot
 import { default as sepRogue } from '../../submodules/xwing-data2/data/pilots/separatist-alliance/rogue-class-starfighter.json'
 import { default as sepGauntlet } from '../../submodules/xwing-data2/data/pilots/separatist-alliance/gauntlet-fighter.json'
 import { XWSFactionService } from '../xwsFaction/xwsFaction.service';
+import { XWSShipService } from '../xwsShip/xwsShip.service';
 
 
 @Injectable()
@@ -111,7 +113,8 @@ export class XWSPilotService {
     constructor(
         @InjectRepository(XWSPilot)
         private readonly xwsPilotRepository: Repository<XWSPilot>,
-        private readonly xwsFactionService: XWSFactionService
+        private readonly xwsFactionService: XWSFactionService,
+        private readonly xwsShipService: XWSShipService
     ) {
         //TODO why does xws store faction full names on ships...
         this.factionMap = {
@@ -123,22 +126,22 @@ export class XWSPilotService {
             "Galactic Republic": "galacticrepublic",
             "Separatist Alliance": "separatistalliance"
         }
-        // this.unknownPilot = new XWSPilot();
-        // this.unknownPilot.xws = "unknown";
-        // this.unknownPilot.name = "Unknown Pilot";
-        // this.unknownPilot.subtitle = "Unknown Pilot";
-        // this.unknownPilot.limited = false;
-        // this.unknownPilot.initiative = 0;
-        // this.unknownPilot.cost = 0;
-        // this.unknownPilot.loadout = 0;
-        // this.unknownPilot.artwork = "";
-        // this.unknownPilot.image = "";
-        // this.unknownPilot.standard = false;
-        // this.unknownPilot.standardLoadout = false;
-        // this.unknownPilot.ship = "unknown";
+        this.unknownPilot = new XWSPilot();
+        this.unknownPilot.xws = "unknown";
+        this.unknownPilot.name = "Unknown Pilot";
+        this.unknownPilot.subtitle = "Unknown Pilot";
+        this.unknownPilot.limited = false;
+        this.unknownPilot.initiative = 0;
+        this.unknownPilot.cost = 0;
+        this.unknownPilot.loadout = 0;
+        this.unknownPilot.artwork = "";
+        this.unknownPilot.image = "";
+        this.unknownPilot.standard = false;
+        this.unknownPilot.standardLoadout = false;
+        this.unknownPilot.ship = "unknown";
     }
 
-    // public unknownPilot: XWSPilot;
+    public unknownPilot: XWSPilot;
     public factionMap: { [name: string]: string};
 
     getAll(): Promise<XWSPilot[]> {
@@ -156,7 +159,7 @@ export class XWSPilotService {
     loadPilots() {
         let ships = [rebelB, rebelARC, rebelAttackShuttle, rebelAuzituck, rebelY, rebelK, rebelE, rebelFang, rebelGauntlet,
             rebelHWK, rebelFalcon, rebelA, rebelSheath, rebelX, rebelTIE, rebelU, rebelGhost, rebelYT2400, rebelZ,
-            empireGunboat, empireGauntlet, empireLambda, empireTIEV1, empireTIEX1, empireInterceptor, empireReaper,
+            empireGunboat, empireGauntlet, empireLambda, empireTIEV1, empireTIEX1, empireInterceptor, empireReaper, empireTIEHeavy,
             empireDefender, empireAggressor, empirePunisher, empireTIEFighter, empirePhantom, empireBomber, empireStriker, empireDeci,
             scumAggressor, scumY, scumFalcon, scumEscape, scumFang, scumFirespray, scumG1A, scumGauntlet, scumHWK, scumJM5K, scumKFighter,
             scumLancer, scumKimo, scumM3A, scumTIE, scumQuad, scumRogue, scumScurrg, scumRazorCrest, scumStarviper, scumYV, scumZ,
@@ -167,10 +170,13 @@ export class XWSPilotService {
             
         return Promise.all(ships.map(
             ship => {
-                ship.pilots.map(
-                    pilot => {
-                        this.save(pilot, ship);
-                })
+                this.xwsShipService.save(ship, this.factionMap[ship.faction]).then(
+                    test =>
+                    ship.pilots.map(
+                        pilot => {
+                            this.save(pilot, ship);
+                    })
+                );
             }
         ));
     }

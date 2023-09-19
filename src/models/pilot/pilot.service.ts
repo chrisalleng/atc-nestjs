@@ -4,34 +4,36 @@ import { Pilot } from './pilot.entity';
 import { Between, Repository } from 'typeorm';
 import { UpgradeService } from '../upgrade/upgrade.service';
 import { ListfortressPilot } from '../../interfaces/listfortressInterfaces';
+import { XWSPilotService } from '../xwsPilot/xwsPilot.service';
+import { Player } from '../player/player.entity';
+import { XWSPilot } from '../xwsPilot/xwsPilot.entity';
 
 @Injectable()
 export class PilotService {
     constructor(
         @InjectRepository(Pilot)
-        private readonly playerRepository: Repository<Pilot>,
-        private readonly upgradeService: UpgradeService
+        private readonly pilotRepository: Repository<Pilot>,
+        private readonly upgradeService: UpgradeService,
+        private readonly xwsPilotService: XWSPilotService
     ) {}
 
     getAll(): Promise<Pilot[]> {
-        return this.playerRepository.find()
+        return this.pilotRepository.find()
     }
 
     findOne(params: any): Promise<Pilot|null>{
         console.log("Received request for pilot id: " + params.id)
-        return this.playerRepository.findOne( {
+        return this.pilotRepository.findOne( {
             where: [
                 {id: params.id}
             ],
         })
     }
 
-    createNew(inputPilot: ListfortressPilot): Pilot {
+    createNew(inputPilot: ListfortressPilot, xws: XWSPilot, inputPlayer: Player): Pilot {
         var pilot = new Pilot();
-        
-        pilot.xws = inputPilot.id;
-        pilot.xws ??= "unknown";
         pilot.ship = inputPilot.ship;
+        pilot.xwsPilot = xws;
 
         if(inputPilot.upgrades) {
             pilot.upgrades = new Array();

@@ -11,7 +11,7 @@ export class XWSPilot {
   @Column()
   name: string;
 
-  //TODO make ship table
+  //TODO save ships on pilots
   @Column()
   ship: string
 
