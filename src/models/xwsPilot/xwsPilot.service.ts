@@ -107,6 +107,7 @@ import { default as sepRogue } from '../../submodules/xwing-data2/data/pilots/se
 import { default as sepGauntlet } from '../../submodules/xwing-data2/data/pilots/separatist-alliance/gauntlet-fighter.json'
 import { XWSFactionService } from '../xwsFaction/xwsFaction.service';
 import { XWSShipService } from '../xwsShip/xwsShip.service';
+import { XWSShip } from '../xwsShip/xwsShip.entity';
 
 
 @Injectable()
@@ -121,7 +122,7 @@ export class XWSPilotService {
         this.unknownPilot.xws = "unknown";
         this.unknownPilot.name = "Unknown Pilot";
         this.unknownPilot.subtitle = "Unknown Pilot";
-        this.unknownPilot.limited = false;
+        this.unknownPilot.limited = 0;
         this.unknownPilot.initiative = 0;
         this.unknownPilot.cost = 0;
         this.unknownPilot.loadout = 0;
@@ -129,7 +130,6 @@ export class XWSPilotService {
         this.unknownPilot.image = "";
         this.unknownPilot.standard = false;
         this.unknownPilot.standardLoadout = false;
-        this.unknownPilot.ship = "unknown";
     }
 
     public unknownPilot: XWSPilot;
@@ -188,7 +188,7 @@ export class XWSPilotService {
         faction ??= this.xwsFactionService.unknownFaction;
 
         savePilot.faction = faction;
-        savePilot.ship = ship.xws;
+        savePilot.ship = await this.xwsShipService.findOne(ship.xws, ship.faction) ?? new XWSShip();
         savePilot.standardLoadout = pilot.standardLoadout ? true : false;
         console.log("Saving " + savePilot.xws);
         return this.xwsPilotRepository.save(savePilot);

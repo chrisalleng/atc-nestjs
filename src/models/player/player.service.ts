@@ -61,7 +61,7 @@ export class PlayerService {
                         console.error("Player: " + inputPlayer.id + " error parsing pilot xws: " + pilot.id);
                     } else {
                         // player.pilots.push(this.pilotService.createNew(pilot, player));
-                        player.pilots.push(this.pilotService.createNew(pilot, parsedXWS, player));
+                        player.pilots.push(this.pilotService.createNew(pilot, parsedXWS));
                     }
                 }
             ));

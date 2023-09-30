@@ -10,7 +10,7 @@ export interface XWSPilotSchema {
     name: string;
     caption: string;
     initiative: number;
-    limited: boolean;
+    limited: number;
     image: string;
     artwork: string;
     standard: boolean;

@@ -30,9 +30,8 @@ export class PilotService {
         })
     }
 
-    createNew(inputPilot: ListfortressPilot, xws: XWSPilot, inputPlayer: Player): Pilot {
+    createNew(inputPilot: ListfortressPilot, xws: XWSPilot): Pilot {
         var pilot = new Pilot();
-        pilot.ship = inputPilot.ship;
         pilot.xwsPilot = xws;
 
         if(inputPilot.upgrades) {

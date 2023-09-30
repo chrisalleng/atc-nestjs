@@ -24,7 +24,7 @@ export class XWSShipService {
         let foundFaction = await this.xwsFactionService.findOne(xwsFaction) ?? this.xwsFactionService.unknownFaction;
         return this.xwsShipRepository.findOne({
             where: [
-                {xws: xwsSearch, faction: foundFaction
+                {xws: xwsSearch + '-' + foundFaction.xws
                 }
             ],
         });
