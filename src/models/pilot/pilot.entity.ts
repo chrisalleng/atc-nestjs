@@ -18,6 +18,7 @@ export class Pilot {
   @OneToMany(() => Upgrade, (upgrade) => upgrade.pilot, { cascade: true })
   upgrades: Upgrade[];
   
+  //TODO remove, should be on xwspilot
   @Column()
   ship: string;
 }

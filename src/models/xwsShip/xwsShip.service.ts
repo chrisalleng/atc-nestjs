@@ -30,14 +30,13 @@ export class XWSShipService {
         });
     }
 
-    async save(inputShip: XWSShipSchema, inputFaction: string) {
+    async save(inputShip: XWSShipSchema) {
         let ship = new XWSShip();
-        ship.xws = inputShip.xws + "-" + inputFaction;
+        ship.faction = await this.xwsFactionService.findOne(inputShip.faction) ?? this.xwsFactionService.unknownFaction;
+        ship.xws = inputShip.xws + "-" + ship.faction.xws;
         ship.name = inputShip.name;
         ship.size = inputShip.size;
         ship.icon = inputShip.icon ?? "";
-
-        ship.faction = await this.xwsFactionService.findOne(inputFaction) ?? this.xwsFactionService.unknownFaction;
         console.log("Saving " + ship.xws);
         return this.xwsShipRepository.save(ship);
     }
