@@ -190,7 +190,6 @@ export class XWSPilotService {
         savePilot.faction = faction;
         savePilot.ship = await this.xwsShipService.findOne(ship.xws, ship.faction) ?? new XWSShip();
         savePilot.standardLoadout = pilot.standardLoadout ? true : false;
-        console.log("Saving " + savePilot.xws);
         return this.xwsPilotRepository.save(savePilot);
     }
 }

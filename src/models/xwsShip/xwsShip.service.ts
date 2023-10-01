@@ -37,7 +37,6 @@ export class XWSShipService {
         ship.name = inputShip.name;
         ship.size = inputShip.size;
         ship.icon = inputShip.icon ?? "";
-        console.log("Saving " + ship.xws);
         return this.xwsShipRepository.save(ship);
     }
 }

@@ -90,7 +90,6 @@ export class XWSUpgradeService {
         saveUpgrade.image = upgrade.sides[0].image;
         saveUpgrade.standard = upgrade.standard;
 
-        console.log("Saving " + saveUpgrade.xws);
         return this.xwsUpgradeRepository.save(saveUpgrade);
     }
 }

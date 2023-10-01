@@ -57,21 +57,20 @@ export class TournamentService {
                 tournament.type = tournamentResponse.type;
                 tournament.created_at = tournamentResponse.created_at;
                 tournament.updated_at = tournamentResponse.updated_at;
+                tournament.size = tournamentResponse.participants.length;
                 tournament.players = new Array();
 
-                await Promise.all(
-                    tournamentResponse.participants.map(
-                        async player => tournament.players.push(await this.playerService.createNew(player, tournamentResponse.participants.length))
-                    )
-                );
-
+                await Promise.all(tournamentResponse.participants.map(
+                    async player => tournament.players.push(await this.playerService.createNew(player, tournament))
+                ))
                 this.tournamentRepository.save(tournament);
+                this.logOperation("Finished", inputTournament);
                 break;
             }
             catch (error) {
-            console.log("Error during tournament " + inputTournament.id + " try attempt " + retries);
-            console.log(error);
-            retries += 1;
+                console.log("Error during tournament " + inputTournament.id + " try attempt " + retries);
+                console.log(error);
+                retries += 1;
             }
             }
     }

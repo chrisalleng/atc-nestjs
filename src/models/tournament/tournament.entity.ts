@@ -21,6 +21,9 @@ export class Tournament {
   @Column({default: 0})
   type: number;
 
+  @Column({default: 0})
+  size: number;
+
   @Column({ type: 'timestamp' })
   created_at: string;
 

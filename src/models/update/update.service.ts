@@ -89,14 +89,14 @@ export class UpdateService {
             console.log("Found " + deletedTournaments.length + " deleted Tournaments");
 
             // delete all data from old version of tournament
-            this.tournamentService.delete(deletedTournaments).then();
+            this.tournamentService.delete(deletedTournaments);
 
-            // insert updated tournaments
-            Promise.all(tournamentsNewOrUpdated.map(
-                (tournament => this.tournamentService.createNew(tournament))
-            )).then(
-                data => console.log("Done updating from Listfortress")
-            );
+            for(let i = 0; i < tournamentsNewOrUpdated.length; i++) {
+                console.log("Starting saving " + tournamentsNewOrUpdated[i]);
+                await this.tournamentService.createNew(tournamentsNewOrUpdated[i]);
+            }
+
+            console.log("Done updating from Listfortress");
 
             // save last update timestamp
             this.createNew();

@@ -32,12 +32,13 @@ export class PlayerService {
         })
     }
 
-    async createNew(inputPlayer: ListfortressPlayer, tournamentSize: number): Promise<Player> {
+    async createNew(inputPlayer: ListfortressPlayer, tournament: Tournament): Promise<Player>{
+        console.log("Started saving player " + inputPlayer.id);
         var player = new Player();
         player.id = inputPlayer.id;
         player.name = inputPlayer.name ?? "";
         player.score = inputPlayer.score ?? 0;
-        player.swiss_rank = inputPlayer.swiss_rank ?? tournamentSize;
+        player.swiss_rank = inputPlayer.swiss_rank ?? tournament.size;
         player.top_cut_rank = inputPlayer.top_cut_rank ?? 0;
         player.mov = inputPlayer.mov ?? 0;
         player.sos = inputPlayer.sos ?? 0;
@@ -45,14 +46,18 @@ export class PlayerService {
         player.list_json = inputPlayer.list_json ?? "";
 
         // Calculated Fields
-        player.percentile = (tournamentSize - inputPlayer.swiss_rank) / (tournamentSize - 1);
+        player.percentile = (tournament.size - inputPlayer.swiss_rank) / (tournament.size - 1);
         player.faction = this.xwsFactionService.unknownFaction;
         if(inputPlayer.list_json) {
-            const list = JSON.parse(inputPlayer.list_json);
+            let list = JSON.parse(inputPlayer.list_json);
             if(list.faction) {
                 const faction = await this.xwsFactionService.findOne(list.faction);
                 player.faction = faction ?? this.xwsFactionService.unknownFaction;
             }
+        }
+
+        if(inputPlayer.list_json) {
+            const list = JSON.parse(inputPlayer.list_json);
             player.pilots = new Array();
             await Promise.all(list.pilots.map(
                 async (pilot: ListfortressPilot) => {
@@ -60,12 +65,12 @@ export class PlayerService {
                     if (!parsedXWS){
                         console.error("Player: " + inputPlayer.id + " error parsing pilot xws: " + pilot.id);
                     } else {
-                        // player.pilots.push(this.pilotService.createNew(pilot, player));
-                        player.pilots.push(this.pilotService.createNew(pilot, parsedXWS));
+                        player.pilots.push(await this.pilotService.createNew(pilot, parsedXWS, player));
                     }
                 }
             ));
-        } 
+        }
+        console.log("Done saving player " + player.id);
         return player;
     }
 }
