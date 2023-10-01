@@ -47,7 +47,6 @@ export class TournamentService {
         var tournamentJson: Observable<AxiosResponse<Tournament, any>>;
         while(retries < 10) {
             try {
-                this.logOperation("Requesting", inputTournament);
                 const tournamentResponse =  (await lastValueFrom(this.httpService.get<ListfortressTournament>('https://listfortress.com/api/v1/tournaments/' + inputTournament.id))).data;
                 this.logOperation("Creating", inputTournament);
 
@@ -72,11 +71,14 @@ export class TournamentService {
                 await Promise.all(tournamentResponse.rounds.map(
                     async round => await Promise.all(round.matches.map(
                         async match => {
-                            //TODO sometimes valid matches have "" as the result, ~5k of them
-                            if(validResults.includes(match.result) && match.player1_id !== null && match.player2_id !== null){
+                            if (!match.result) {
+                                match.result = match.player1_points === match.player2_points ? "draw" : "win";
+                            }
+                            if(validResults.includes(match.result) && match.player1_id !== null && match.player2_id !== null
+                            && match.player1_points !== null && match.player2_points !== null){
                                 tournament.matches.push(await this.matchService.createNew(match, round, tournament));
                                 tournament.matches.push(await this.matchService.createNewInverted(match, round, tournament));
-                            } else if (match.result !== "bye") {
+                            } else if (match.result !== "bye" && match.result !== "win") {
                                 console.error("Skipped match " + match.id + " result: " + match.result);
                             }
                         }
@@ -84,7 +86,7 @@ export class TournamentService {
                 ))
 
                 this.tournamentRepository.save(tournament);
-                this.logOperation("Finished", inputTournament);
+                // this.logOperation("Finished", inputTournament);
                 break;
             }
             catch (error) {
