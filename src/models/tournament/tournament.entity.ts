@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, PrimaryColumn, OneToMany } from 'typeorm';
 import { Player } from '../player/player.entity';
+import { Match } from '../match/match.entity';
 
 @Entity()
 export class Tournament {
@@ -8,6 +9,9 @@ export class Tournament {
 
   @OneToMany(() => Player, (player) => player.tournament, { cascade: true })
   players: Player[];
+
+  @OneToMany(() => Match, (match) => match.tournament, { cascade: true })
+  matches: Match[];
 
   @Column()
   name: string;

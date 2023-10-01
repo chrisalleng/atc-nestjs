@@ -25,7 +25,7 @@ export class PilotService {
     }
 
     findOne(params: any): Promise<Pilot|null>{
-        console.log("Received request for pilot id: " + params.id)
+        // console.log("Received request for pilot id: " + params.id)
         return this.pilotRepository.findOne( {
             where: [
                 {id: params.id}
@@ -34,7 +34,7 @@ export class PilotService {
     }
 
     async createNew(inputPilot: ListfortressPilot, xws: XWSPilot, player: Player): Promise<Pilot> {
-        console.log("Started saving pilot " + xws.xws + "for player " + player.id);
+        // console.log("Started saving pilot " + xws.xws + "for player " + player.id);
         var pilot = new Pilot();
         pilot.xwsPilot = xws;
         pilot.player = player;
@@ -55,7 +55,7 @@ export class PilotService {
                             let parsedXWS = await this.xwsUpgradeService.findOne(upgrade) ?? this.xwsUpgradeService.unknownUpgrade;
                             if (parsedXWS.xws != this.xwsUpgradeService.unknownUpgrade.xws) {
                                 pilot.upgrades.push(this.upgradeService.createNew(parsedXWS));
-                                console.info("Saving upgrade xws: " + upgrade + " for player " + player.id + " for pilot " + xws.xws);
+                                // console.info("Saving upgrade xws: " + upgrade + " for player " + player.id + " for pilot " + xws.xws);
                             } else {
                                 console.error("Error parsing upgrade xws: " + upgrade);
                             }
@@ -64,7 +64,7 @@ export class PilotService {
                 }
             ))
         }
-        console.log("Done saving pilot " + xws.xws + " for player " + player.id);
+        // console.log("Done saving pilot " + xws.xws + " for player " + player.id);
         return pilot;
     }
 

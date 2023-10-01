@@ -17,7 +17,7 @@ export class UpgradeService {
     }
 
     findOne(params: any): Promise<Upgrade|null>{
-        console.log("Received request for upgrade id: " + params.id)
+        // console.log("Received request for upgrade id: " + params.id)
         return this.upgradeRepository.findOne( {
             where: [
                 {id: params.id}

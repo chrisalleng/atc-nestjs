@@ -7,6 +7,7 @@ export interface ListfortressTournament {
     created_at: string;
     updated_at: string;
     participants: ListfortressPlayer[];
+    rounds: ListfortressRound[];
 }
 
 export interface ListfortressPlayer {
@@ -30,4 +31,20 @@ export interface ListfortressPilot {
 
 export interface ListfortressUpgrade {
     [upgradeType:string] : string[];
+}
+
+export interface ListfortressRound {
+    scenario: string;
+    roundtype_id: number;
+    matches: ListfortressMatch[];
+}
+
+export interface ListfortressMatch {
+    id: number;
+    player1_id: number;
+    player1_points: number,
+    player2_id: number,
+    player2_points: number,
+    result: string,
+    winner_id: number
 }

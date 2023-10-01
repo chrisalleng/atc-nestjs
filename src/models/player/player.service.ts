@@ -17,23 +17,37 @@ export class PlayerService {
         private readonly pilotService: PilotService,
         private readonly xwsFactionService: XWSFactionService,
         private readonly xwsPilotService: XWSPilotService
-    ) {}
+    ) {
+        this.unknownPlayer = new Player();
+        this.unknownPlayer.id = 0;
+        this.unknownPlayer.dropped = false;
+        this.unknownPlayer.faction = this.xwsFactionService.unknownFaction;
+        this.unknownPlayer.mov = 0;
+        this.unknownPlayer.name = "Unknwon Player";
+        this.unknownPlayer.percentile = 0;
+        this.unknownPlayer.score = 0;
+        this.unknownPlayer.sos = 0;
+        this.unknownPlayer.swiss_rank = 0;
+        this.unknownPlayer.top_cut_rank = 0;
+    }
+
+    public unknownPlayer: Player;
 
     getAll(): Promise<Player[]> {
         return this.playerRepository.find()
     }
 
     findOne(params: any): Promise<Player|null>{
-        console.log("Received request for player id: " + params.id)
+        // console.log("Received request for player id: " + params.id)
         return this.playerRepository.findOne( {
             where: [
-                {id: params.id}
+                {id: params}
             ],
         })
     }
 
     async createNew(inputPlayer: ListfortressPlayer, tournament: Tournament): Promise<Player>{
-        console.log("Started saving player " + inputPlayer.id);
+        // console.log("Started saving player " + inputPlayer.id);
         var player = new Player();
         player.id = inputPlayer.id;
         player.name = inputPlayer.name ?? "";
@@ -70,7 +84,7 @@ export class PlayerService {
                 }
             ));
         }
-        console.log("Done saving player " + player.id);
+        // console.log("Done saving player " + player.id);
         return player;
     }
 }

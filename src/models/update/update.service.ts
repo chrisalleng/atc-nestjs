@@ -92,7 +92,6 @@ export class UpdateService {
             this.tournamentService.delete(deletedTournaments);
 
             for(let i = 0; i < tournamentsNewOrUpdated.length; i++) {
-                console.log("Starting saving " + tournamentsNewOrUpdated[i]);
                 await this.tournamentService.createNew(tournamentsNewOrUpdated[i]);
             }
 

@@ -22,6 +22,8 @@ import { XWSShipModule } from './models/xwsShip/xwsShip.module';
 import { XWSShipController } from './models/xwsShip/xwsShip.controller';
 import { XWSUpgradeModule } from './models/xwsUpgrade/xwsUpgrade.module';
 import { XWSUpgradeController } from './models/xwsUpgrade/xwsUpgrade.controller';
+import { MatchModule } from './models/match/match.module';
+import { MatchController } from './models/match/match.controller';
 
 @Module({
   imports: [
@@ -45,9 +47,10 @@ import { XWSUpgradeController } from './models/xwsUpgrade/xwsUpgrade.controller'
     XWSFactionModule,
     XWSPilotModule,
     XWSShipModule,
-    XWSUpgradeModule
+    XWSUpgradeModule,
+    MatchModule
   ],
-  controllers: [AppController, UpdateController, TournamentController, PlayerController, PilotController, UpgradeController, XWSFactionController, XWSPilotController, XWSShipController, XWSUpgradeController],
+  controllers: [AppController, UpdateController, TournamentController, PlayerController, PilotController, UpgradeController, XWSFactionController, XWSPilotController, XWSShipController, XWSUpgradeController, MatchController],
   providers: [AppService],
 })
 export class AppModule {}
