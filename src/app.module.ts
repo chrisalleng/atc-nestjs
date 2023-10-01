@@ -20,6 +20,8 @@ import { XWSPilotModule } from './models/xwsPilot/xwsPilot.module';
 import { XWSPilotController } from './models/xwsPilot/xwsPilot.controller';
 import { XWSShipModule } from './models/xwsShip/xwsShip.module';
 import { XWSShipController } from './models/xwsShip/xwsShip.controller';
+import { XWSUpgradeModule } from './models/xwsUpgrade/xwsUpgrade.module';
+import { XWSUpgradeController } from './models/xwsUpgrade/xwsUpgrade.controller';
 
 @Module({
   imports: [
@@ -42,9 +44,10 @@ import { XWSShipController } from './models/xwsShip/xwsShip.controller';
     UpgradeModule,
     XWSFactionModule,
     XWSPilotModule,
-    XWSShipModule
+    XWSShipModule,
+    XWSUpgradeModule
   ],
-  controllers: [AppController, UpdateController, TournamentController, PlayerController, PilotController, UpgradeController, XWSFactionController, XWSPilotController, XWSShipController],
+  controllers: [AppController, UpdateController, TournamentController, PlayerController, PilotController, UpgradeController, XWSFactionController, XWSPilotController, XWSShipController, XWSUpgradeController],
   providers: [AppService],
 })
 export class AppModule {}

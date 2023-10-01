@@ -26,3 +26,21 @@ export interface XWSShipSchema {
     icon: string;
     faction: string;
 }
+
+export interface XWSUpgradeSchema {
+    xws: string;
+    name: string;
+    cost: XWSUpgradeCost;
+    standard: boolean;
+    sides: XWSUpgradeSide[];
+}
+
+export interface XWSUpgradeSide {
+    slots: string[];
+    image: string;
+    artwork: string;
+}
+
+export interface XWSUpgradeCost {
+    value: number;
+}
