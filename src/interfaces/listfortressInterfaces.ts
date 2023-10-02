@@ -2,8 +2,8 @@ export interface ListfortressTournament {
     id: number;
     name: string;
     date: Date;
-    format: number;
-    type: number;
+    format_id: number;
+    tournament_type_id: number;
     created_at: string;
     updated_at: string;
     participants: ListfortressPlayer[];

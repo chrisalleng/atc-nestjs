@@ -20,10 +20,10 @@ export class Tournament {
   date: Date;
 
   @Column({default: 0})
-  format: number;
+  format: string;
 
   @Column({default: 0})
-  type: number;
+  type: string;
 
   @Column({default: 0})
   size: number;

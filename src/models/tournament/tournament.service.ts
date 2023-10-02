@@ -19,6 +19,29 @@ export class TournamentService {
         private readonly matchService: MatchService
     ) {}
 
+    formats: { [id: number]: string; } = {
+        1: "2.0 Extended",
+        2: "Second Edition",
+        3: "Custom",
+        4: "Other",
+        34: "2.0 Hyperspace",
+        35: "2.5 Extended",
+        36: "2.5 Standard",
+        37: "2.0 Legacy Standard",
+        38: "2.0 Legacy Wild Space"
+     };
+
+     tournamentTypes: { [id: number]: string; } = {
+        1: "Store Event",
+        2: "National Championship",
+        3: "Hyperspace Trial",
+        4: "Hypersapce Cup",
+        5: "System Open",
+        6: "World Championship",
+        7: "Casual Event",
+        8: "Other"
+     };
+
     getAll(): Promise<Tournament[]> {
         return this.tournamentRepository.find()
     }
@@ -32,7 +55,7 @@ export class TournamentService {
         })
     }
 
-    search(searchFormat: number, startDate: Date, endDate: Date): Promise<Tournament[]> {
+    search(searchFormat: string, startDate: Date, endDate: Date): Promise<Tournament[]> {
         return this.tournamentRepository.find(
             {
                 where: [
@@ -54,8 +77,8 @@ export class TournamentService {
                 tournament.id = tournamentResponse.id;
                 tournament.name = tournamentResponse.name;
                 tournament.date = tournamentResponse.date;
-                tournament.format = tournamentResponse.format;
-                tournament.type = tournamentResponse.type;
+                tournament.format = this.formats[tournamentResponse.format_id];
+                tournament.type = this.tournamentTypes[tournamentResponse.tournament_type_id];
                 tournament.created_at = tournamentResponse.created_at;
                 tournament.updated_at = tournamentResponse.updated_at;
                 tournament.size = tournamentResponse.participants.length;
@@ -79,7 +102,8 @@ export class TournamentService {
                                 tournament.matches.push(await this.matchService.createNew(match, round, tournament));
                                 tournament.matches.push(await this.matchService.createNewInverted(match, round, tournament));
                             } else if (match.result !== "bye" && match.result !== "win") {
-                                console.error("Skipped match " + match.id + " result: " + match.result);
+                                console.error("Match " + match.id + " result: " + match.result + " player1: " + match.player1_id + 
+                                " score " + match.player2_points + " player2: " + match.player2_id + " score " + match.player2_points);
                             }
                         }
                     ))

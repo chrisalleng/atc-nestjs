@@ -15,6 +15,8 @@ export class MatchService {
         private readonly playerService: PlayerService
     ) {}
 
+    legalScenarios = ["Assault at the Satellite Array", "Chance Engagement", "Salvage Mission", "Scramble the Transmissions", "Unknown Scenario"];
+
     getAll(): Promise<Match[]> {
         return this.matchRepository.find()
     }
@@ -46,7 +48,16 @@ export class MatchService {
             saveMatch.result = "draw";
         }
 
-        saveMatch.scenario = round.scenario ?? "unknown";
+        if(round.scenario === "Assault the Satellite Array") {
+            saveMatch.scenario = "Assault at the Satellite Array"
+        } else if(!this.legalScenarios.includes(round.scenario)) {
+            if(round.scenario) {
+                console.error("Unknown scenario " + round.scenario + " found.")
+            }
+            saveMatch.scenario = "Unknown Scenario";
+        } else {
+            saveMatch.scenario = round.scenario;
+        }
         saveMatch.type = round.roundtype_id === 1 ? "swiss" : "cut";
 
         return saveMatch;
